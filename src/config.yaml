@@ -1,0 +1,66 @@
+aec:
+  lightning_module:
+    teacher_model_checkpoint: './models/teacher_ft_ea_5k_balanced/'    
+    teacher_model: './models/teacher_ft_ea_5k_balanced/'
+    learning_rate: 0.005
+    bottleneck_dim: 256
+    max_epochs: 3
+    init_model_path: ''
+    log_every_n_steps: 20
+    aec_checkpoint_path: 'models/aec_model' 
+  data_module:  
+    dataset_path: './Data/csv_files/concept_set_5k_balanced.csv'
+    save_dataset_path: './Data/saved_datasets/aec_dataset/'
+    batch_size: 32 #16
+    num_workers: 40
+    test_size: 0.1
+    seed: 42
+    dataset_mapping_size: 1000
+    tokenized_max_length_teacher: 512
+    tokenized_max_length_student: 512
+
+cav: 
+  lightning_module:
+    learning_rate: 0.005
+    max_epochs: 3
+    init_model_path: './models/teacher_ft_ea_5k_balanced/'
+    log_every_n_steps: 20
+    cav_checkpoint_path: 'models/cav_model'
+  data_module:  
+    dataset_path: './Data/csv_files/concept_set_5k_balanced.csv'
+    save_dataset_path: './Data/saved_datasets/cav_dataset/'
+    batch_size: 32 #32
+    num_workers: 40
+
+stmod:
+  lightning_module:
+    student_model: './models/student_roberta_base_wiki_3k_ea_balanced'
+    student_checkpoint_path: 'models/student_roberta_base_wiki_3k_ea_balanced'
+    random_state_kmeans: 42
+    learning_rate: 0.00003
+    max_epochs: 3
+    layer_num: 11
+    lambda: 5 #20.1
+    n_clusters: 2 #5
+    init_model_path: ''
+    bottleneck_layer: -1 #-3 -5 -7 -9
+    do_proto_mean: True
+    log_every_n_steps: 100
+  data_module:  
+    save_dataset_path: './models/student_roberta_base_wiki_3k_ea_balanced'
+    train_sample_size: 43737 # 10000
+    validation_sample_size: 32128 #2000
+    tokenized_max_length_source: 512
+    tokenized_max_length_target: 150
+    test_sample_size: 31866
+    batch_size: 32 #64
+    num_workers: 40
+
+main:
+  alpha: 0.3
+  generate_epochs: 1
+  proto_update_frequency: 1
+  cav_update_frequency: 2
+  max_epochs: 3
+  fast_dev_run: False
+  
